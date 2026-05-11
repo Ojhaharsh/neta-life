@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetaLife — The Politician Report Card | Know Your Neta</title>
+    <meta name="description" content="India's most comprehensive politician accountability tracker. Track MP/MLA attendance, promises, fund utilization, and performance grades.">
+    <meta name="keywords" content="politician tracker, MP performance, MLA attendance, MPLADS, election promises, India democracy">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect x="2" y="2" width="24" height="24" rx="6" stroke="url(#logoGrad)" stroke-width="2.5"/>
+                        <path d="M9 14L12 17L19 10" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs><linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="26"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <span class="logo-text">Neta<span class="logo-accent">Life</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#search-section" class="nav-link">Search</a>
+                <a href="#stats-section" class="nav-link">National Stats</a>
+                <a href="#leaderboard-section" class="nav-link">Leaderboard</a>
+                <a href="#promises-section" class="nav-link">Promise Tracker</a>
+                <a href="#methodology-section" class="nav-link">Methodology</a>
+                <a href="#about-section" class="nav-link">About</a>
+            </div>
+            <button class="nav-cta" id="contribute-btn">Contribute Data</button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#search-section" class="mobile-link">Search</a>
+        <a href="#stats-section" class="mobile-link">National Stats</a>
+        <a href="#leaderboard-section" class="mobile-link">Leaderboard</a>
+        <a href="#promises-section" class="mobile-link">Promise Tracker</a>
+        <a href="#about-section" class="mobile-link">About</a>
+    </div>
+
+    <!-- Data Period Transparency Banner -->
+    <div class="data-period-banner" id="data-period-banner" style="display:none;"></div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Live data from PRS Legislative Research — All 543 Lok Sabha MPs
+            </div>
+            <h1 class="hero-title">
+                Know Your <span class="gradient-text">Neta</span>.<br>
+                Hold Them <span class="gradient-text-2">Accountable</span>.
+            </h1>
+            <p class="hero-subtitle">
+                India's most comprehensive post-election accountability platform. Real parliamentary data — attendance, questions raised, debates participated, and performance grades for every MP.
+            </p>
+            <div class="hero-search" id="search-section">
+                <div class="search-container">
+                    <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search by name, constituency, or state..." autocomplete="off">
+                    <button class="search-btn" id="search-btn">Search</button>
+                </div>
+                <div class="search-filters">
+                    <button class="filter-chip active" data-filter="all">All</button>
+                    <button class="filter-chip" data-filter="mp">Lok Sabha MPs</button>
+                    <button class="filter-chip" data-filter="state">By State</button>
+                    <button class="filter-chip" data-filter="party">By Party</button>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="543">0</span>
+                    <span class="hero-stat-label">Lok Sabha MPs</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="4036">0</span>
+                    <span class="hero-stat-label">State MLAs</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-count="245">0</span>
+                    <span class="hero-stat-label">Rajya Sabha MPs</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results (hidden by default) -->
+    <section class="search-results-section" id="search-results" style="display:none;">
+        <div class="container">
+            <h2 class="section-title">Search Results</h2>
+            <div class="results-grid" id="results-grid"></div>
+        </div>
+    </section>
+
+    <!-- National Stats Section -->
+    <section class="stats-section" id="stats-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">National Overview</span>
+                <h2 class="section-title">The State of Our <span class="gradient-text">Democracy</span></h2>
+                <p class="section-subtitle">Live aggregated data from PRS Legislative Research for the 18th Lok Sabha (2024-present).</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card stat-card-large">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">🏛️</span>
+                        <span class="stat-badge stat-badge-warn">Below Average</span>
+                    </div>
+                    <div class="stat-value">62%</div>
+                    <div class="stat-label">Average Parliament Attendance</div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width: 62%"></div></div>
+                    <div class="stat-detail">18th Lok Sabha (2024-present)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-badge stat-badge-danger">Critical</span>
+                    </div>
+                    <div class="stat-value">₹4.2K Cr</div>
+                    <div class="stat-label">Unspent MPLADS Funds</div>
+                    <div class="stat-detail">Funds allocated but not utilized</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">📝</span>
+                        <span class="stat-badge stat-badge-info">Tracked</span>
+                    </div>
+                    <div class="stat-value">34%</div>
+                    <div class="stat-label">Promises Fulfilled</div>
+                    <div class="stat-detail">Of top 500 manifesto promises</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">⚖️</span>
+                        <span class="stat-badge stat-badge-danger">Alarming</span>
+                    </div>
+                    <div class="stat-value">251</div>
+                    <div class="stat-label">MPs with Criminal Cases</div>
+                    <div class="stat-detail">46% of current Lok Sabha</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">📈</span>
+                        <span class="stat-badge stat-badge-warn">Concerning</span>
+                    </div>
+                    <div class="stat-value">674%</div>
+                    <div class="stat-label">Avg. Asset Growth</div>
+                    <div class="stat-detail">Over one term (5 years)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">❓</span>
+                        <span class="stat-badge stat-badge-success">Active</span>
+                    </div>
+                    <div class="stat-value">48,230</div>
+                    <div class="stat-label">Questions Raised</div>
+                    <div class="stat-detail">In current Lok Sabha session</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Politician Profile Card (Modal/Detail View) -->
+    <section class="profile-section" id="profile-section" style="display:none;">
+        <div class="container">
+            <button class="back-btn" id="back-btn">← Back to results</button>
+            <div class="profile-card" id="profile-card"></div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard-section" id="leaderboard-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Performance Rankings</span>
+                <h2 class="section-title">Politician <span class="gradient-text">Leaderboard</span></h2>
+                <p class="section-subtitle">Ranked by composite performance score: attendance (40%), questions raised (30%), debate participation (20%) & bills introduced (10%).</p>
+            </div>
+            <div class="leaderboard-tabs">
+                <button class="lb-tab active" data-tab="top">🏆 Top Performers</button>
+                <button class="lb-tab" data-tab="bottom">📉 Worst Performers</button>
+                <button class="lb-tab" data-tab="attendance">📋 Best Attendance</button>
+                <button class="lb-tab" data-tab="funds">❓ Most Questions</button>
+            </div>
+            <div class="leaderboard-table" id="leaderboard-table"></div>
+        </div>
+    </section>
+
+    <!-- Promise Tracker Section -->
+    <section class="promises-section" id="promises-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Promise Tracker</span>
+                <h2 class="section-title">Manifesto <span class="gradient-text-2">Promises</span> vs Reality</h2>
+                <p class="section-subtitle">Tracking major manifesto promises across <strong>all major parties</strong>. Status based on verifiable evidence only.</p>
+            </div>
+            <div class="promises-filter">
+                <button class="promise-filter-btn active" data-status="all">All</button>
+                <button class="promise-filter-btn" data-status="fulfilled">✅ Fulfilled</button>
+                <button class="promise-filter-btn" data-status="in-progress">🔄 In Progress</button>
+                <button class="promise-filter-btn" data-status="broken">❌ Broken</button>
+                <button class="promise-filter-btn" data-status="not-started">⏳ Not Started</button>
+            </div>
+            <div class="promises-grid" id="promises-grid"></div>
+        </div>
+    </section>
+
+    <!-- State Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Geographic Insights</span>
+                <h2 class="section-title">Performance by <span class="gradient-text">State</span></h2>
+                <p class="section-subtitle">Click on a state to explore constituency-level data.</p>
+            </div>
+            <div class="state-cards-grid" id="state-cards-grid"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">About NetaLife</span>
+                <h2 class="section-title">Why This <span class="gradient-text-2">Matters</span></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">🗳️</div>
+                    <h3>Post-Election Accountability</h3>
+                    <p>Pre-election declarations are just the beginning. We track what happens AFTER they win — attendance, questions raised, debates, fund utilization. Real accountability, not just promises on paper.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">📊</div>
+                    <h3>Data-Driven</h3>
+                    <p>Every metric is sourced from PRS Legislative Research (prsindia.org) — India's most trusted independent parliamentary watchdog since 2005.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🤝</div>
+                    <h3>Community Powered</h3>
+                    <p>Citizens can contribute evidence, flag discrepancies, and help verify promise delivery status. Democracy is a team sport.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🔓</div>
+                    <h3>Open & Non-Partisan</h3>
+                    <p>No political affiliation. No bias. Just data. All our methodology is transparent and open to scrutiny.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section class="methodology-section" id="methodology-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Transparency</span>
+                <h2 class="section-title">Our <span class="gradient-text">Methodology</span></h2>
+                <p class="section-subtitle">How we grade, what we exclude, and why. Full transparency — no black boxes.</p>
+            </div>
+            <div class="methodology-content"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="logo-text">Neta<span class="logo-accent">Life</span></span>
+                    <p>India's post-election accountability platform. Making democracy work, one report card at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <a href="#">Search Politicians</a>
+                    <a href="#">Leaderboard</a>
+                    <a href="#">Promise Tracker</a>
+                    <a href="#">State Data</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <a href="#">Methodology</a>
+                    <a href="#">Data Sources</a>
+                    <a href="#">API Access</a>
+                    <a href="#">File an RTI</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Community</h4>
+                    <a href="#">Contribute</a>
+                    <a href="#">Report Issues</a>
+                    <a href="#">GitHub</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 NetaLife. Built for Indian democracy. Open source & non-partisan.</p>
+                <p class="footer-disclaimer">MP parliamentary activity data sourced directly from <a href="https://prsindia.org/mptrack/18-lok-sabha" target="_blank" style="color:var(--accent-1)">PRS Legislative Research</a>. Data © PRS India — used for non-commercial public interest. Covers 9 June 2024 – 18 April 2026 (7 sessions). Promise tracking is editorially maintained with cited sources.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

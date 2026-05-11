@@ -1,0 +1,52 @@
+name: Refresh PRS Data
+
+on:
+  schedule:
+    # Runs every Sunday at 2:00 AM IST (8:30 PM UTC Saturday)
+    # PRS updates their data after Parliament sessions end
+    - cron: '30 20 * * 0'
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions tab
+
+jobs:
+  refresh-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to push the updated CSV
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download fresh PRS CSV
+        run: |
+          echo "Downloading 18th Lok Sabha MP Track data from PRS India..."
+          curl -L \
+            -o "data/prs_18th.csv" \
+            "https://prsindia.org/mptrack/download?file_path=files/mptrack/18-lok-sabha/Mp-Track/18%20LS%20MP%20Track.csv"
+          echo "Download complete. File size: $(wc -c < data/prs_18th.csv) bytes"
+          echo "Row count: $(wc -l < data/prs_18th.csv) rows"
+
+      - name: Verify data integrity
+        run: |
+          # Basic sanity check — file should have at least 500 rows (543 MPs)
+          ROWS=$(wc -l < data/prs_18th.csv)
+          if [ "$ROWS" -lt 500 ]; then
+            echo "ERROR: Only $ROWS rows found. Expected 500+. Aborting to keep old data."
+            exit 1
+          fi
+          echo "Data looks good: $ROWS rows"
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prs_18th.csv
+          # Only commit if there's actually a change
+          if git diff --staged --quiet; then
+            echo "No changes to PRS data. Skipping commit."
+          else
+            TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+            git commit -m "chore: refresh PRS data — $TIMESTAMP"
+            git push
+            echo "Data updated and pushed."
+          fi
