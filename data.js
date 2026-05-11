@@ -108,10 +108,13 @@ const MANIFESTO_PROMISES = [
 // at the Centre. This is factual, not editorial. State-level promises are tracked where parties govern.
 
 // --- CSV Parser ---
+// Auto-detects delimiter: PRS direct CSV uses commas; old GitHub CSV used semicolons
 function parseCSV(text) {
     const lines = text.split('\n').filter(l => l.trim().length > 0);
     if (lines.length < 2) return [];
-    
+
+    const delimiter = lines[0].includes(',') ? ',' : ';';
+
     const parseRow = (line) => {
         const values = [];
         let current = '';
@@ -119,13 +122,13 @@ function parseCSV(text) {
         for (let i = 0; i < line.length; i++) {
             const ch = line[i];
             if (ch === '"') { inQuotes = !inQuotes; }
-            else if (ch === ';' && !inQuotes) { values.push(current.trim()); current = ''; }
+            else if (ch === delimiter && !inQuotes) { values.push(current.trim()); current = ''; }
             else { current += ch; }
         }
         values.push(current.trim());
         return values;
     };
-    
+
     const headers = parseRow(lines[0]);
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
