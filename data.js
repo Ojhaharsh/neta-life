@@ -197,7 +197,7 @@ function computeGrade(p) {
 function transformRow(row, id) {
     const isPRS = 'mp_name' in row;  // PRS direct format uses snake_case columns
 
-    let note, attRaw, attendance, isMinister, questions, debates, bills, partyFull, name, constituency, state, age, gender, education, terms, startOfTerm, endOfTerm;
+    let note, attRaw, attendance, isMinister, questions, debates, bills, partyFull, name, constituency, state, age, gender, education, terms, startOfTerm, endOfTerm, prsId;
 
     if (isPRS) {
         // === PRS Direct Download format ===
@@ -218,6 +218,7 @@ function transformRow(row, id) {
         terms      = row['term'] || '';
         startOfTerm = row['term_start_date'] || '';
         endOfTerm  = row['term_end_date'] || 'In Office';
+        prsId      = row['mp_election_index'] || '';
     } else {
         // === GitHub CSV / legacy format ===
         note = row['Comment'] || '';
@@ -246,6 +247,7 @@ function transformRow(row, id) {
 
     const p = {
         id,
+        prsId,
         name,
         constituency,
         state,
@@ -335,14 +337,25 @@ function computeNationalStats(politicians) {
 let POLITICIANS = [];
 let STATES_DATA = [];
 let NATIONAL_STATS = {};
+let MP_DETAILS = {};
 
 async function fetchRealData() {
     try {
-        const resp = await fetch(DATA_URL);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const text = await resp.text();
+        const [respCsv, respDetails] = await Promise.all([
+            fetch(DATA_URL),
+            fetch('./data/mp_details.json').catch(() => ({ ok: false }))
+        ]);
+        
+        if (!respCsv.ok) throw new Error(`HTTP ${respCsv.status}`);
+        const text = await respCsv.text();
         const rows = parseCSV(text);
         POLITICIANS = rows.map((row, i) => transformRow(row, i + 1)).filter(p => p.name);
+        
+        if (respDetails.ok) {
+            MP_DETAILS = await respDetails.json();
+            console.log(`✅ NetaLife: Loaded details for ${Object.keys(MP_DETAILS).length} MPs`);
+        }
+
         STATES_DATA = computeStatesData(POLITICIANS);
         NATIONAL_STATS = computeNationalStats(POLITICIANS);
         console.log(`✅ NetaLife: Loaded ${POLITICIANS.length} MPs from PRS India (${DATA_PERIOD.end})`);

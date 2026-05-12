@@ -36,17 +36,30 @@ jobs:
           fi
           echo "Data looks good: $ROWS rows"
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Scrape MP Details (Debates & Questions)
+        run: |
+          cd scripts
+          python scrape_details.py
+          
       - name: Commit and push if data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/prs_18th.csv
+          git add data/prs_18th.csv data/mp_details.json
           # Only commit if there's actually a change
           if git diff --staged --quiet; then
             echo "No changes to PRS data. Skipping commit."
           else
             TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-            git commit -m "chore: refresh PRS data — $TIMESTAMP"
+            git commit -m "chore: refresh PRS data & details — $TIMESTAMP"
             git push
             echo "Data updated and pushed."
           fi

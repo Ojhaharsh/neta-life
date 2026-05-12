@@ -262,6 +262,9 @@ function showProfile(id) {
         ${pm('Age', p.age, (p.age / 100) * 100, 'var(--text-secondary)')}
         ${pm('Education', p.education, 50, 'var(--info)')}
     </div>
+    
+    ${renderDetails(p)}
+
     <div class="profile-source-note">
         <h4>📋 Data Source & Transparency</h4>
         <p>${p.comment || 'No additional notes from PRS.'}</p>
@@ -279,6 +282,47 @@ function pm(label, value, pct, color) {
         <div class="pm-label">${label}</div>
         <div class="pm-bar"><div class="pm-bar-fill" style="width:${Math.max(pct, 2)}%;background:${color}"></div></div>
     </div>`;
+}
+
+function renderDetails(p) {
+    if (!MP_DETAILS[p.prsId]) return '';
+    const details = MP_DETAILS[p.prsId];
+    
+    let html = '';
+    
+    if (details.debates && details.debates.length > 0) {
+        html += `<div class="details-section">
+            <h4 style="margin-bottom: 12px; font-size: 1.1rem;">🎙️ Recent Debates</h4>
+            <div class="details-list">
+                ${details.debates.map(d => `
+                    <div class="details-item" style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-3); padding: 12px; margin-bottom: 8px; border-radius: 4px;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">${d.date} · ${d.type}</div>
+                        <div style="font-size: 0.95rem;">${d.title}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+    
+    if (details.questions && details.questions.length > 0) {
+        html += `<div class="details-section" style="margin-top: 24px;">
+            <h4 style="margin-bottom: 12px; font-size: 1.1rem;">❓ Recent Questions</h4>
+            <div class="details-list">
+                ${details.questions.map(q => `
+                    <div class="details-item" style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-2); padding: 12px; margin-bottom: 8px; border-radius: 4px;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">${q.date} · ${q.ministry} · ${q.type}</div>
+                        <div style="font-size: 0.95rem;">${q.title}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+    
+    if (html) {
+        html = `<div class="profile-details-container" style="margin-top: 32px;">${html}</div>`;
+    }
+    
+    return html;
 }
 
 document.getElementById('back-btn').addEventListener('click', () => {
